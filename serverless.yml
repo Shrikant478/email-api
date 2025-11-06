@@ -1,0 +1,39 @@
+org: shrikant01
+app: email-api
+service: email-api
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline # Use the local testing plugin
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  # ... other settings ...
+
+  logs: # <--- ADD THIS LINE
+    restApi: false # <--- AND THIS LINE
+
+  # ... rest of your file ...# You can change this, but us-east-1 is a good default
+
+  # Environment variables are passed to our code
+  environment:
+    # !!! CHANGE THIS to the email you verified in AWS
+    SENDER_EMAIL: srikant19.rj@gmail.com 
+
+  # This gives your function permission to send emails
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"
+
+functions:
+  sendEmail:
+    handler: handler.sendEmail # Points to the 'sendEmail' function in 'handler.js'
+    events:
+      - http:
+          path: /send-email
+          method: post
+          cors: true # Allows browsers to call your API
